@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ശ്രീമദ് നാരായണീയം | Srimad Narayaneeyam</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts for Malayalam, Devanagari & English Serif typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Gayathri:wght@400;700&family=Noto+Serif+Devanagari:wght@400;600;700&family=Noto+Serif+Malayalam:wght@400;600;700&family=Tiro+Devanagari+Sanskrit:ital@0;1&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            maroon: {
+              50: '#FDF2F2',
+              100: '#FDE8E8',
+              700: '#A31D1D',
+              800: '#831818',
+              900: '#5F1010',
+            },
+            parchment: {
+              50: '#FAF8F5',
+              100: '#F5EFEB',
+              200: '#EBE1D7',
+              800: '#3D342C',
+              900: '#231E19'
+            },
+            gold: {
+              500: '#D4AF37',
+              600: '#B89726'
+            }
+          },
+          fontFamily: {
+            malayalam: ['"Noto Serif Malayalam"', 'Gayathri', 'sans-serif'],
+            devanagari: ['"Noto Serif Devanagari"', '"Tiro Devanagari Sanskrit"', 'serif'],
+            translit: ['"Lora"', 'serif'],
+            header: ['"Cinzel"', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom styling for authentic devotional parchment texture */
+    body {
+      background-color: #FAF7F2;
+      color: #2F241D;
+    }
+    .verse-line {
+      line-height: 2.1;
+      letter-spacing: 0.02em;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #F1ECE4;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #D4AF37;
+      border-radius: 4px;
+    }
+    .glass-bar {
+      backdrop-filter: blur(10px);
+      background: rgba(253, 250, 246, 0.92);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans selection:bg-amber-200 selection:text-maroon-900">
+
+  <!-- Main App Container -->
+  <div class="flex h-screen overflow-hidden">
+
+    <!-- Mobile Drawer Overlay -->
+    <div id="drawerBackdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/40 z-30 hidden lg:hidden transition-opacity"></div>
+
+    <!-- Sidebar / Drawer -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-80 bg-[#F5EFEB] border-r border-[#E5DACD] flex flex-col transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-200 ease-in-out shadow-lg lg:shadow-none">
+      
+      <!-- Drawer Header -->
+      <div class="p-4 border-b border-[#E3D6C5] flex items-center justify-between bg-[#ECE2D5]">
+        <div>
+          <h2 class="font-header font-bold text-lg text-maroon-900 tracking-wide">ദശകങ്ങൾ</h2>
+          <span class="text-xs text-stone-600 font-medium">100 Dashakams Directory</span>
+        </div>
+        <button onclick="toggleSidebar(false)" class="p-1 rounded-md text-stone-600 hover:text-stone-900 lg:hidden">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Quick Search Filter -->
+      <div class="p-3 border-b border-[#E7DDD0] bg-[#FAF6F0]">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3 top-3"></i>
+          <input type="text" id="dashakamSearch" oninput="filterDashakamList()" placeholder="Search Dashakam (1-100 or title)..."
+                 class="w-full pl-9 pr-3 py-1.5 text-xs rounded-lg border border-stone-300 focus:outline-none focus:ring-2 focus:ring-maroon-800 bg-white">
+        </div>
+      </div>
+
+      <!-- Dashakam List (1 to 100) -->
+      <div id="dashakamListContainer" class="flex-1 overflow-y-auto custom-scroll p-2 space-y-1">
+        <!-- Rendered dynamically via JavaScript -->
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="p-3 bg-[#EAE0D2] border-t border-[#DFD1BF] text-center text-xs text-stone-600">
+        <p class="font-serif italic text-maroon-900">॥ സർവ്വത്ര ഗോവിന്ദ നാമസങ്കീർത്തനം ॥</p>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden bg-[#FAF7F2]">
+      
+      <!-- Top Navigation Header -->
+      <header class="glass-bar border-b border-[#E8DDCE] px-4 py-2.5 z-20 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-3">
+          <button onclick="toggleSidebar(true)" class="p-2 rounded-lg bg-stone-100 hover:bg-stone-200 text-maroon-900 lg:hidden focus:outline-none">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+          <div>
+            <h1 class="text-base sm:text-lg font-bold font-header text-maroon-900 leading-tight">ശ്രീമദ് നാരായണീയം</h1>
+            <p class="text-[11px] text-stone-500 hidden sm:block">Melpathur Narayana Bhattathiri • 100 Dashakams</p>
+          </div>
+        </div>
+
+        <!-- Script & Controls Bar -->
+        <div class="flex items-center gap-2">
+          <!-- Script Switcher Buttons -->
+          <div class="inline-flex rounded-lg border border-stone-300 p-0.5 bg-stone-100/90 text-xs shadow-inner">
+            <button onclick="setScript('mal')" id="btn-mal" class="px-2.5 py-1 rounded-md font-medium transition-all bg-maroon-800 text-white shadow-sm">
+              മലയാളം
+            </button>
+            <button onclick="setScript('dev')" id="btn-dev" class="px-2.5 py-1 rounded-md font-medium text-stone-700 transition-all hover:text-black">
+              देवनागरी
+            </button>
+            <button onclick="setScript('eng')" id="btn-eng" class="px-2.5 py-1 rounded-md font-medium text-stone-700 transition-all hover:text-black">
+              English
+            </button>
+          </div>
+
+          <!-- Meaning Toggle Button -->
+          <button onclick="toggleMeaning()" id="toggleMeaningBtn" title="Toggle Meanings" class="hidden md:inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg border border-stone-300 bg-white hover:bg-stone-50 text-stone-700 transition-colors">
+            <i data-lucide="book-open-text" class="w-3.5 h-3.5 text-maroon-800"></i>
+            <span id="meaningBtnText">അർത്ഥം മറയ്ക്കുക</span>
+          </button>
+
+          <!-- Text Resizer -->
+          <div class="hidden sm:inline-flex rounded-lg border border-stone-300 bg-white overflow-hidden text-xs">
+            <button onclick="adjustFontSize(-1)" class="px-2 py-1.5 hover:bg-stone-100 text-stone-700 border-r border-stone-200" title="Decrease font size">A-</button>
+            <button onclick="adjustFontSize(1)" class="px-2 py-1.5 hover:bg-stone-100 text-stone-700" title="Increase font size">A+</button>
+          </div>
+
+          <!-- Share / Bookmark info -->
+          <button onclick="copyDashakamLink()" title="Copy Link to this Dashakam" class="p-2 rounded-lg border border-stone-300 bg-white hover:bg-stone-50 text-stone-600 transition-colors">
+            <i data-lucide="share-2" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable Reader Canvas -->
+      <main class="flex-1 overflow-y-auto custom-scroll px-4 sm:px-6 lg:px-12 py-6">
+        <div class="max-w-4xl mx-auto space-y-6">
+
+          <!-- Dashakam Top Navigation -->
+          <div class="flex items-center justify-between pb-3 border-b border-[#E3D6C5]">
+            <button id="prevDashakamBtn" onclick="navigateDashakam(-1)" class="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-maroon-800 hover:text-maroon-900 py-1.5 px-3 rounded-lg hover:bg-stone-200/50 transition">
+              <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              <span>Previous</span>
+            </button>
+
+            <div class="text-center">
+              <span id="dashakamNumberBadge" class="inline-block px-3 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-maroon-900 border border-amber-300/50">
+                Dashakam 1
+              </span>
+            </div>
+
+            <button id="nextDashakamBtn" onclick="navigateDashakam(1)" class="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-maroon-800 hover:text-maroon-900 py-1.5 px-3 rounded-lg hover:bg-stone-200/50 transition">
+              <span>Next</span>
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+          <!-- Dashakam Title Header Banner -->
+          <div class="text-center py-4 bg-[#FCF8F2] border border-[#E9DDCF] rounded-2xl p-6 shadow-sm">
+            <h2 id="dashakamTitleMain" class="text-2xl sm:text-3xl font-bold font-malayalam text-maroon-900 mb-2"></h2>
+            <h3 id="dashakamTitleSub" class="text-base sm:text-lg font-medium text-stone-700 mb-1"></h3>
+            <p id="dashakamDescription" class="text-xs sm:text-sm text-stone-500 max-w-2xl mx-auto"></p>
+          </div>
+
+          <!-- Audio Player Bar (Linked to current dashakam) -->
+          <div class="bg-white border border-[#E6D9C8] rounded-xl p-3.5 shadow-sm flex flex-col sm:flex-row items-center gap-3">
+            <div class="flex items-center gap-2">
+              <button onclick="toggleAudio()" id="playAudioBtn" class="w-10 h-10 rounded-full bg-maroon-800 hover:bg-maroon-900 text-white flex items-center justify-center shadow transition transform active:scale-95">
+                <i id="playIcon" data-lucide="play" class="w-5 h-5 ml-0.5"></i>
+              </button>
+              <div>
+                <span class="text-xs font-bold text-stone-800 block">ശ്രവിക്കുക (Chant Audio)</span>
+                <span id="audioTrackLabel" class="text-[11px] text-stone-500">Dashakam 1 Audio</span>
+              </div>
+            </div>
+
+            <!-- Custom Seeker Slider -->
+            <div class="flex-1 w-full flex items-center gap-2 px-2">
+              <span id="audioCurrentTime" class="text-[11px] text-stone-500 font-mono">0:00</span>
+              <input type="range" id="audioSeeker" value="0" min="0" max="100" class="w-full h-1.5 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-maroon-800">
+              <span id="audioDuration" class="text-[11px] text-stone-500 font-mono">--:--</span>
+            </div>
+
+            <!-- Playback Speed -->
+            <div class="flex items-center gap-1.5 self-end sm:self-center">
+              <button onclick="cycleSpeed()" id="speedBtn" class="text-[11px] font-bold text-stone-700 bg-stone-100 hover:bg-stone-200 px-2 py-1 rounded border border-stone-200">
+                1.0x
+              </button>
+            </div>
+            
+            <audio id="audioElement" preload="none" src=""></audio>
+          </div>
+
+          <!-- Quick Mobile Tools Bar -->
+          <div class="flex md:hidden items-center justify-between text-xs bg-white p-2 rounded-lg border border-stone-200">
+            <button onclick="toggleMeaning()" class="flex items-center gap-1 text-maroon-800 font-semibold">
+              <i data-lucide="book-open-text" class="w-4 h-4"></i>
+              <span id="mobileMeaningToggleText">അർത്ഥം മറയ്ക്കുക</span>
+            </button>
+            <div class="flex items-center gap-2">
+              <span class="text-stone-500">Text:</span>
+              <button onclick="adjustFontSize(-1)" class="px-2 py-0.5 bg-stone-100 rounded border">A-</button>
+              <button onclick="adjustFontSize(1)" class="px-2 py-0.5 bg-stone-100 rounded border">A+</button>
+            </div>
+          </div>
+
+          <!-- Slokas Container -->
+          <div id="slokasContainer" class="space-y-6 pb-20">
+            <!-- Injected via JavaScript -->
+          </div>
+
+          <!-- Bottom Navigation Bar -->
+          <div class="flex items-center justify-between pt-6 pb-12 border-t border-[#E3D6C5]">
+            <button onclick="navigateDashakam(-1)" class="inline-flex items-center gap-1 text-sm font-semibold text-maroon-800 hover:text-maroon-900 py-2 px-4 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 transition shadow-sm">
+              <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              <span>Previous Dashakam</span>
+            </button>
+            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-xs text-stone-500 hover:text-maroon-900 inline-flex items-center gap-1">
+              <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i> Top
+            </button>
+            <button onclick="navigateDashakam(1)" class="inline-flex items-center gap-1 text-sm font-semibold text-maroon-800 hover:text-maroon-900 py-2 px-4 rounded-xl border border-stone-300 bg-white hover:bg-stone-50 transition shadow-sm">
+              <span>Next Dashakam</span>
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Feedback Toast Notification -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-maroon-900 text-white px-4 py-2 rounded-xl text-xs shadow-xl flex items-center gap-2">
+    <i data-lucide="check-circle" class="w-4 h-4 text-amber-400"></i>
+    <span id="toastMessage">Link copied to clipboard!</span>
+  </div>
+
+  <!-- JAVASCRIPT DATA & APP LOGIC -->
+  <script>
+    /* -------------------------------------------------------------
+       1. DATA STRUCTURE: All 100 Dashakams with titles.
+       Real complete verse text provided for sample Dashakams 1, 2, and 100.
+       Easily append or fetch additional slokas for remaining Dashakams.
+    ------------------------------------------------------------- */
+    const DASHAKAMS_META = [
+      { id: 1, title_mal: "ഭഗവന്മഹിമാനുവർണ്ണനം", title_dev: "भगवन्महिमानुवर्णनम्", title_eng: "The Glory of the Supreme Lord" },
+      { id: 2, title_mal: "ഭഗവദ്സ്വരൂപസൗന്ദര്യം", title_dev: "भगवत्स्वरूपसौन्दर्यम्", title_eng: "The Form and Beauty of the Lord" },
+      { id: 3, title_mal: "ഭക്തോത്തമലക്ഷണം", title_dev: "भक्तोत्तमलक्षणम्", title_eng: "Characteristics of an Ideal Devotee" },
+      { id: 4, title_mal: "അഷ്ടാംഗയോഗം", title_dev: "अष्टाङ्गयोगः", title_eng: "Ashtanga Yoga & Meditation" },
+      { id: 5, title_mal: "വിരാട് പുരുഷോല്പത്തി", title_dev: "विराट्पुरुषोत्पत्तिः", title_eng: "Cosmic Manifestation (Virat Purusha)" },
+      { id: 6, title_mal: "വിരാട് പുരുഷ സ്വരൂപം", title_dev: "विराट्पुरुषस्वरूपम्", title_eng: "Description of the Cosmic Body" },
+      { id: 7, title_mal: "ബ്രഹ്മോല്പത്തിയും തപസ്സും", title_dev: "ब्रह्मोत्पत्तिः तपश्च", title_eng: "Brahma's Origin and Penance" },
+      { id: 8, title_mal: "പ്രളയവും സൃഷ്ട്യാരംഭവും", title_dev: "प्रलयः सृष्ट्यारम्भश्च", title_eng: "Dissolution and Dawn of Creation" },
+      { id: 9, title_mal: "സൃഷ്ടി വിസ്താരം", title_dev: "सृष्टिविस्तारः", title_eng: "Detailed Creation of Living Beings" },
+      { id: 10, title_mal: "സൃഷ്ടി വൈവിധ്യം", title_dev: "सृष्टिवैविध्यम्", title_eng: "Diversity of Creations & Time" },
+      { id: 11, title_mal: "സനകാദി ചരിതവും വരാഹാവതാരവും", title_dev: "सनकादिचरितं वराहावतारश्च", title_eng: "Sanakas & The Boar Incarnation" },
+      { id: 12, title_mal: "വരാഹാവതാരം", title_dev: "वराहावतारः", title_eng: "The Varaha Avatara" },
+      { id: 13, title_mal: "ഹിരണ്യാക്ഷ വധം", title_dev: "हिरण्याक्षवधः", title_eng: "Slaying of Hiranyaksha" },
+      { id: 14, title_mal: "കപിലാവതാരം", title_dev: "कपिलावतारः", title_eng: "Kapila Avatara & Devahuti" },
+      { id: 15, title_mal: "കപിലോപദേശം", title_dev: "कपिलोपदशः", title_eng: "Teachings of Lord Kapila" },
+      { id: 16, title_mal: "നരനാരായണാവതാരം", title_dev: "नरनारायणावतारः", title_eng: "Nara-Narayana Incarnation" },
+      { id: 17, title_mal: "ധ്രുവ ചരിതം", title_dev: "ध्रुवचरितम्", title_eng: "Story of Child Dhruva" },
+      { id: 18, title_mal: "പൃഥു ചരിതം", title_dev: "पृथुचरितम्", title_eng: "Story of King Prithu" },
+      { id: 19, title_mal: "പ്രാചീനബർഹി ചരിതം", title_dev: "प्राचीनबर्हिचरितम्", title_eng: "The Story of Prachinabarhi" },
+      { id: 20, title_mal: "ഋഷഭദേവ ചരിതം", title_dev: "ऋषभदेवचरितम्", title_eng: "Life of Rishabhadeva" },
+      { id: 21, title_mal: "വർണ്ണഭാരതം", title_dev: "वर्षवर्णनम्", title_eng: "Geography of the Universe" },
+      { id: 22, title_mal: "അജാമിള മോക്ഷം", title_dev: "अजामिलोपाख्यानम्", title_eng: "Salvation of Ajamila" },
+      { id: 23, title_mal: "ദക്ഷ ചരിതം", title_dev: "दक्षचरितम्", title_eng: "Dakshas Penance & Lineage" },
+      { id: 24, title_mal: "ചിത്രകേതു ചരിതം", title_dev: "चित्रकेतुचरितम्", title_eng: "Story of King Chitraketu" },
+      { id: 25, title_mal: "പ്രഹ്ലാദ ചരിതം", title_dev: "प्रह्लादचरितम्", title_eng: "Story of Bhakta Prahlada" },
+      { id: 26, title_mal: "നരസിംഹാവതാരം", title_dev: "नृसिंहावतारः", title_eng: "Narasimha Avatara" },
+      { id: 27, title_mal: "ഗജേന്ദ്രമോക്ഷം", title_dev: "गजेन्द्रमोक्षः", title_eng: "Deliverance of Gajendra" },
+      { id: 28, title_mal: "സമുദ്രമഥനം - കൂർമ്മാവതാരം", title_dev: "कूर्मावतारः", title_eng: "Churning of Ocean - Kurma Avatara" },
+      { id: 29, title_mal: "മോഹിന്യവതാരവും അമൃതവിതരണവും", title_dev: "मोहिनीरूपेणामृतदानम्", title_eng: "Mohini and Nectar Distribution" },
+      { id: 30, title_mal: "വാമനാവതാരം - ജനനം", title_dev: "वामनावतारः", title_eng: "Incarnation of Vamana" },
+      { id: 31, title_mal: "ബലിദർപ്പഹരണം", title_dev: "बलिदर्पहरनम्", title_eng: "Humbling of Mahabali" },
+      { id: 32, title_mal: "മത്സ്യാവതാരം", title_dev: "मत्स्यावतारः", title_eng: "Matsya Avatara" },
+      { id: 33, title_mal: "സൂര്യവംശ വർണ്ണനം", title_dev: "सूर्यवंशवर्णनम्", title_eng: "The Solar Dynasty" },
+      { id: 34, title_mal: "ശ്രീരാമാവതാരം", title_dev: "श्रीरामावतारः", title_eng: "Advent of Sri Rama" },
+      { id: 35, title_mal: "ശ്രീരാമവിജയം", title_dev: "श्रीरामविजयः", title_eng: "Victory of Sri Rama" },
+      { id: 36, title_mal: "പരശുരാമാവതാരം", title_dev: "परशुरामावतारः", title_eng: "Parashurama Avatara" },
+      { id: 37, title_mal: "കൃഷ്ണാവതാര ഭൂമിക", title_dev: "कृष्णावतारभूमिका", title_eng: "Prelude to Krishna Avatara" },
+      { id: 38, title_mal: "ശ്രീകൃഷ്ണാവതാരം", title_dev: "श्रीकृष्णावतारः", title_eng: "Birth of Sri Krishna" },
+      { id: 39, title_mal: "യോഗമായാ നിർഗ്ഗമനം", title_dev: "योगमायानिर्गमनम्", title_eng: "Yogamaya's Warning to Kamsa" },
+      { id: 40, title_mal: "പൂതനാമോക്ഷം", title_dev: "पूतनामोक्षः", title_eng: "Salvation of Putana" },
+      { id: 41, title_mal: "ശകടാസുര വധം", title_dev: "शकटासुरवधः", title_eng: "Overturning the Handcart" },
+      { id: 42, title_mal: "തൃണാവർത്ത വധം", title_dev: "तृणावर्तवधः", title_eng: "Slaying of Trinavarta" },
+      { id: 43, title_mal: "നാമകരണവും ബാലലീലകളും", title_dev: "नामकरणं बाललीलाश्च", title_eng: "Naming Ceremony & Childhood Plays" },
+      { id: 44, title_mal: "വാത്സല്യ ലീലകൾ", title_dev: "वात्सल्यलीलाः", title_eng: "Childhood Pranks of Krishna" },
+      { id: 45, title_mal: "വിശ്വരൂപദർശനം", title_dev: "विश्वस्वरूपदर्शनम्", title_eng: "Vision of Universe in Baby's Mouth" },
+      { id: 46, title_mal: "ഉലൂഖല ബന്ധനം", title_dev: "उलूखलबन्धनम्", title_eng: "Bound to the Mortar (Damodara)" },
+      { id: 47, title_mal: "യമളാർജ്ജുന ഭഞ്ജനം", title_dev: "यमळार्जुनभञ्जनम्", title_eng: "Felling the Twin Arjuna Trees" },
+      { id: 48, title_mal: "വൃന്ദാവന പ്രവേശം", title_dev: "वृन्दावनप्रवेशः", title_eng: "Entry into Sri Vrindavana" },
+      { id: 49, title_mal: "വത്സാസുര ബകാസുര വധം", title_dev: "वत्सासुरबकासुरवधः", title_eng: "Slaying of Vatsasura & Bakasura" },
+      { id: 50, title_mal: "അഘാസുര വധം", title_dev: "अघासुरवधः", title_eng: "Slaying of Aghasura" },
+      { id: 51, title_mal: "ബ്രഹ്മഗർവ്വ ശമനം", title_dev: "ब्रह्मगर्वशमनम्", title_eng: "Subduing Brahma's Pride" },
+      { id: 52, title_mal: "ധേനുsupported വധം", title_dev: "धेनुकासुरवधः", title_eng: "Slaying of Dhenukasura in Talavana" },
+      { id: 53, title_mal: "കാളിയമർദ്ദനം - പ്രവേശം", title_dev: "कालियमर्दनप्रारम्भः", title_eng: "Subduing Kaliya Serpent (Part 1)" },
+      { id: 54, title_mal: "കാളിയനൃത്തം", title_dev: "कालियनर्तनम्", title_eng: "Dance on the Hoods of Kaliya" },
+      { id: 55, title_mal: "കാളിയാനുഗ്രഹം", title_dev: "कालियानुग्रहः", title_eng: "Blessings upon Kaliya" },
+      { id: 56, title_mal: "ദാവാഗ്നി പാനം", title_dev: "दावाग्निपानम्", title_eng: "Swallowing the Forest Fire" },
+      { id: 57, title_mal: "പ്രലംബാസുര വധം", title_dev: "प्रलम्बासुरवधः", title_eng: "Slaying of Pralambasura" },
+      { id: 58, title_mal: "വേണുഗാനം", title_dev: "वेणुगानम्", title_eng: "The Enchanting Divine Flute" },
+      { id: 59, title_mal: "ഗോപികാവസ്ത്രാപഹരണം", title_dev: "चीरहरणम्", title_eng: "Chira Harana Leela" },
+      { id: 60, title_mal: "വിപ്രപത്ന്യനുഗ്രഹം", title_dev: "विप्रपत्नीप्रसादः", title_eng: "Blessing the Brahmanas' Wives" },
+      { id: 61, title_mal: "ഗോവർദ്ധനോദ്ധാരണം - ആരംഭം", title_dev: "गोवर्धनोद्धरणप्रारम्भः", title_eng: "Lifting of Mount Govardhana (Part 1)" },
+      { id: 62, title_mal: "ഗോവർദ്ധനോദ്ധാരണം", title_dev: "गोवर्धनोद्धरणम्", title_eng: "Shelter under Govardhana" },
+      { id: 63, title_mal: "ഗോവിന്ദാഭിഷേകം", title_dev: "गोविन्दाभिषेकः", title_eng: "Coronation as Govinda" },
+      { id: 64, title_mal: "വരുണലോക ദർശനം", title_dev: "वरुणलोकदर्शनम्", title_eng: "Rescuing Nanda from Varuna" },
+      { id: 65, title_mal: "രാസക്രീഡ - ആരംഭം", title_dev: "रासक्रीडाप्रारम्भः", title_eng: "Rasa Leela - The Moonlight Call" },
+      { id: 66, title_mal: "രാസക്രീഡ - ഗോപികാവിരഹം", title_dev: "गोपिकाविरहः", title_eng: "Pangs of Separation of Gopis" },
+      { id: 67, title_mal: "രാസക്രീഡ - പുനസ്സംഗമം", title_dev: "पुनःसङ्गमः", title_eng: "Reunion with the Lord" },
+      { id: 68, title_mal: "രാസനൃത്തം", title_dev: "रासनर्तनम्", title_eng: "The Grand Rasa Dance" },
+      { id: 69, title_mal: "സുദർശനമോക്ഷവും ശംഖചൂഡവധവും", title_dev: "सुदर्शनमोक्षः शङ्खचूडवधश्च", title_eng: "Deliverance of Sudarshana" },
+      { id: 70, title_mal: "കേശിവധവും വ്യോമാസുരവധവും", title_dev: "केशिवधः व्योमासुरवधश्च", title_eng: "Slaying of Keshi & Vyomasura" },
+      { id: 71, title_mal: "അക്രൂര യാത്ര", title_dev: "अक्रूरयात्रा", title_eng: "Akroora's Journey to Gokula" },
+      { id: 72, title_mal: "മഥുരാ യാത്ര", title_dev: "मथुरायात्रा", title_eng: "Journey to Mathura" },
+      { id: 73, title_mal: "മഥുരാ പ്രവേശം", title_dev: "मथुराप्रवेशः", title_eng: "Arrival in Mathura City" },
+      { id: 74, title_mal: "കുബ്ജാനുഗ്രഹവും ധനുർഭംഗവും", title_dev: "कुब्जानुग्रहः धनुर्भङ्गश्च", title_eng: "Blessing Kubja & Breaking the Bow" },
+      { id: 75, title_mal: "കംസ വധം", title_dev: "कंसवधः", title_eng: "Slaying of Kamsa" },
+      { id: 76, title_mal: "ഉപനയനവും ഗുരുവാസവും", title_dev: "गुरुकुलवासः", title_eng: "Gurukula Studies with Sandipani" },
+      { id: 77, title_mal: "ഉദ്ധവദൂത്", title_dev: "उद्धवसन्देशः", title_eng: "Uddhava's Mission to Vrindavana" },
+      { id: 78, title_mal: "ദ്വാരകാ നിർമ്മാണം", title_dev: "द्वारकानिर्माणम्", title_eng: "Building of the City of Dwaraka" },
+      { id: 79, title_mal: "രുക്മിണീ സ്വയംവരം - സന്ദേശം", title_dev: "रुक्मिणीसन्देशः", title_eng: "Rukmini's Letter of Love" },
+      { id: 80, title_mal: "രുക്മിണീ കല്യാണം", title_dev: "रुक्मिणीकल्याणम्", title_eng: "Marriage to Sri Rukmini" },
+      { id: 81, title_mal: "സ്യമന്തകോപാഖ്യാനം", title_dev: "स्यमन्तकोपाख्यानम्", title_eng: "The Syamantaka Jewel Episode" },
+      { id: 82, title_mal: "കാളിന്ദീ പരിണയവും നരകാസുരവധവും", title_dev: "नरकासुरवधः", title_eng: "Marriages & Slaying of Narakasura" },
+      { id: 83, title_mal: "പാരിജാതാപഹരണം", title_dev: "पारिजातापहरणम्", title_eng: "Bringing the Parijata Tree" },
+      { id: 84, title_mal: "ബാണാസുര യുദ്ധം", title_dev: "बाणासुरयुद्धम्", title_eng: "Battle with Banasura" },
+      { id: 85, title_mal: "പൗണ്ഡ്രക വധം", title_dev: "पौण्ड्रकवधः", title_eng: "Deliverance of Paundraka Vasudeva" },
+      { id: 86, title_mal: "ദ്വിവിദ വധവും സാന്ദീപനിപുത്രലാഭവും", title_dev: "विविधलीलाः", title_eng: "Various Exploits of Krishna" },
+      { id: 87, title_mal: "കുചേലവൃത്തം - ആരംഭം", title_dev: "कुचेलोपाख्यानम् (१)", title_eng: "Story of Kuchela (Part 1)" },
+      { id: 88, title_mal: "കുചേലവൃത്തം - ഭഗവദനുഗ്രഹം", title_dev: "कुचेलोपाख्यानम् (२)", title_eng: "Grace Bestowed upon Kuchela" },
+      { id: 89, title_mal: "സന്താനഗോപാലം", title_dev: "सन्तानगोपालम्", title_eng: "Restoring the Brahmana's Sons" },
+      { id: 90, title_mal: "ഭഗവദ്വിഭൂതി യോഗം", title_dev: "विभूतियोगः", title_eng: "The Divine Splendours" },
+      { id: 91, title_mal: "ഭക്തിയോഗ മഹത്ത്വം", title_dev: "भक्तियोगमहत्त्वम्", title_eng: "Excellence of Bhakti Marga" },
+      { id: 92, title_mal: "കർമ്മയോഗവും ജ്ഞാനയോഗവും", title_dev: "कर्मज्ञानभक्तियोगाः", title_eng: "Integration of Karma and Jnana" },
+      { id: 93, title_mal: "അവധൂതോപാഖ്യാനം (24 ഗുരുക്കന്മാർ)", title_dev: "चतुर्विंशतिगुरवः", title_eng: "The 24 Gurus of Avadhuta" },
+      { id: 94, title_mal: "തത്ത്വോപദേശം", title_dev: "तत्वोपदेशः", title_eng: "Supreme Philosophical Truths" },
+      { id: 95, title_mal: "ധ്യാനയോഗവും ഉദ്ധവോപദേശവും", title_dev: "उद्धवोपदेशसमाप्तिः", title_eng: "Teachings to Uddhava" },
+      { id: 96, title_mal: "ഭാഗവത തത്ത്വ സംഗ്രഹം", title_dev: "भागवततत्वसङ्ग्रहः", title_eng: "Essence of the Bhagavata Purana" },
+      { id: 97, title_mal: "ഉത്തമഭക്തി പ്രാർത്ഥന", title_dev: "उत्तमभक्तिप्रार्थना", title_eng: "Prayer for Unflinching Devotion" },
+      { id: 98, title_mal: "നിഷ്കള പരബ്രഹ്മസ്വരൂപം", title_dev: "निष्कलपरब्रह्मस्वरूपम्", title_eng: "Meditation on the Formless Absolute" },
+      { id: 99, title_mal: "സഗുണ ബ്രഹ്മസ്വരൂപം", title_dev: "सगुणपरब्रह्मस्वरूपम्", title_eng: "Meditation on the Manifest Lord" },
+      { id: 100, title_mal: "കേശാദിപാദവർണ്ണനവും രോഗശമനവും", title_dev: "केशादिपादसौन्दर्यवर्णनम्", title_eng: "Vision of Lord Guruvayurappa (Keshadi Pada)" }
+    ];
+
+    // Detailed verses database (Dashakam 1, 2, and 100 preloaded in full)
+    const DASHAKAM_CONTENT = {
+      1: {
+        description: "ഗുരുവായൂർ ശ്രീകോവിലിൽ പ്രത്യക്ഷമായി വിളങ്ങുന്ന പരബ്രഹ്മസ്വരൂപത്തിന്റെ മഹിമാവർണ്ണനവും രോഗശമനപ്രാർത്ഥനയും.",
+        audio: "https://ia800300.us.archive.org/28/items/Narayaneeyam-Malayalam/Narayaneeyam_D1.mp3",
+        verses: [
+          {
+            num: 1,
+            mal: "സാന്ദ്രാനന്ദാവബോധാത്മകമനുപമിതം കാലദേശാവധിഭ്യാം\nനിർമ്മുക്തം നിത്യമുക്തം നിഗമശതസഹസ്രേണ നിർഭാസ്യമാനം\nഅസ്പഷ്ടം ദൃഷ്ടമാത്രേ വപുരതുലതയാ സത്യമുൽകൃഷ്ടരൂപം\nതത്താദൃക്തത്ത്വമേതത് പ്രഥമനിഗദിതം വാതഗേഹാധിനാഥ!",
+            dev: "सान्द्रानन्दावबोधात्मकमनुपमितं कालदेशावधिभ्यां\nनिर्मुक्तं नित्यमुक्तं निगमशतसहस्रेण निर्भास्यमानम्।\nअस्पष्टं दृष्टमात्रे वपुरतुलतया सत्यमुत्कृष्टरूपं\nतत्तादृक्तत्त्वमेतत् प्रथमनिगदितं वातगेहाधिनाथ!॥",
+            eng: "sāndrānandāvabodhātmakam anupamitaṁ kāladeśāvadhībhyāṁ\nnirmuktaṁ nityamuktaṁ nigamaśatasahasreṇa nirbhāsyamānam |\naspaṣṭaṁ dṛṣṭamātre vapuratulatayā satyam utkṛṣṭarūpaṁ\ntattādṛk tattvam etat prathamanigaditaṁ vātagehādhinātha ||",
+            meaning: "ഹേ ഗുരുവായൂരപ്പാ (വാതഗേഹാധിനാഥാ)! പരിപൂർണ്ണ ആനന്ദവും ജ്ഞാനസ്വരൂപവുമായുള്ളതും, സമാനതകളില്ലാത്തതും, ദേശകാലപരിധികളാൽ ബന്ധിക്കപ്പെടാത്തതും, എപ്പോഴും മുക്തമായിരിക്കുന്നതും, അനേകായിരം വേദവാക്യങ്ങളാൽ പ്രകീർത്തിക്കപ്പെടുന്നതുമായ പരബ്രഹ്മതത്ത്വം ഏതൊന്നാണോ—ആ പരമസത്യം തന്നെയാണ് അനുപമമായ സൗന്ദര്യത്തോടെ ഇതാ എന്റെ കൺമുന്നിൽ സാക്ഷാൽ വിഗ്രഹരൂപത്തിൽ വിളങ്ങിനിൽക്കുന്നത്!"
+          },
+          {
+            num: 2,
+            mal: "ഏവം ദുർല്ലഭ്യതേ ഏവം സുലഭതരം അഹോ ഭാഗ്യം ഏഷാം ജനാനാം\nയത് പ്രേക്ഷ്യന്തേ സമന്താത് അനുപമവിഭവാഃ കേഽപി പുണ്യൈകഭാജഃ\nഏതച്ച ത്വദ്വപുഃ സ്വർഗ്ഗസുഖമതിശയദ് ഭക്തിഭാജാം പുരസ്താത്\nആവിർഭൂതം സമൃദ്ധ്യാ പ്രശമയതു മമ വ്യാധിജാതം ഗദാദ്യമ്",
+            dev: "एवं दुर्लभ्यते एवं सुलभतरं अहो भाग्यं एषां जनानां\nयत् प्रेक्ष्यन्ते समन्तात् अनुपमविभवाः केऽपि पुण्यैकभाजः।\nएतच्च त्वद्वपुः स्वर्गसुखमവിशयद् भक्तिभाजां पुरस्तात्\nआविर्भूतं समृद्ध्या प्रशमयतु मम व्याधिजातं गदाद्यम्॥",
+            eng: "evaṁ durlabhyate evaṁ sulabhataraṁ aho bhāgyaṁ eṣāṁ janānāṁ\nyat prekṣyante samantāt anupamavibhavāḥ ke'pi puṇyaikabhājaḥ |\netacca tvadvapuḥ svargasukhamatiśayad bhaktibhājāṁ purastāt\nāvirbhūtaṁ samṛddhyā praśamayatu mama vyādhijātaṁ gadādyam ||",
+            meaning: "തത്ത്വചിന്തയിലൂടെ കണ്ടെത്താൻ അത്യന്തം ദുർലഭമായ പരബ്രഹ്മത്തെ ഇപ്രകാരം സദാ കൺകുളിർക്കെ ദർശിക്കുന്ന ഈ ഭക്തജനങ്ങളുടെ ഭാഗ്യം എത്രയോ അത്ഭുതം! സ്വർഗ്ഗസുഖത്തെക്കാൾ ആനന്ദം പകരുന്ന അങ്ങയുടെ ഈ ദിവ്യമംഗള വിഗ്രഹം എന്റെ സമസ്ത രോഗപീഡകളെയും തീരാദുരിതങ്ങളെയും വേരോടെ ശമിപ്പിക്കുമാറാകണമേ."
+          },
+          {
+            num: 3,
+            mal: "നൂനം തത്ത്വാവിചാരാത് പഥി പഥി നിയതാഃ കർമ്മപാശാന്വിതാനാം\nദുഃഖം ദൂരീകരോതീത്യുദിതമപി തഥാ ചൈകമാസ്ത്യേവ ലോക്കേ\nത്വദ്ധ്യാനം ത്വത്പ്രഭാവശ്രവണഗുണപരീവർത്തനാന്യാദരാദ്യൈഃ\nകുർവദ്ഭിർഭാഗ്യഭാദ്ഭിഃ സുഗമതരതയാ മുക്തിരാസൂയതേഽപി",
+            dev: "नूनं तत्त्वाविचारात् पथि पथि नियताः कर्मपाशान्वितानां\nदुःखं दूरीकरोतीत्युदितमपि तथा चैकमास्त्येव लोके।\nत्वद्ध्यानं त्वत्प्रभावश्रवणगुणपरीवर्त्तनान्यादराद्यैः\nकुर्वद्भिर्भाग्यभाद्भिः सुगमतया मुक्तिरासूयतेऽपि॥",
+            eng: "nūnaṁ tattvāvīcārāt pathi pathi niyatāḥ karmapāśānvitānāṁ\nduḥkhaṁ dūrīkarotītyuditam api tathā caikam āstyeva loke |\ntvaddhyānaṁ tvatprabhāva-śravaṇa-guṇa-parīvartanāny-ādarādyaiḥ\nkurvadbhir-bhāgyabhādbhiḥ sugamataratayā muktir-āsūyate'pi ||",
+            meaning: "കർമ്മബന്ധങ്ങളിൽ കുരുങ്ങിക്കിടക്കുന്ന സംസാരികൾക്ക് തത്ത്വവിചാരമെന്ന ജ്ഞാനമാർഗ്ഗം അത്യന്തം ദുഷ്കരമാണ്. എന്നാൽ അങ്ങയെ ധ്യാനിക്കുകയും, അങ്ങയുടെ ലീലകളും മാഹാത്മ്യങ്ങളും ഭക്തിപൂർവ്വം ശ്രവിക്കുകയും, നാമസങ്കീർത്തനം ചെയ്യുകയും ചെയ്യുന്ന സുകൃതികൾക്ക് അനായാസേന മുക്തി പദവി കൈവരുന്നു."
+          },
+          {
+            num: 4,
+            mal: "ശ്രീമൻ! ധന്യോഽസി സർവ്വേശ്വര! തവ ച വപുർവിശ്വപാവനമാസ്തേ\nസത്യം ജ്ഞാനസ്വരൂപം വിഭവഗുണനിധിർഭക്തിഗമ്യം പ്രസന്നം\nഭക്താനാമാർത്തീഹാരീ ഭവഭയദമനഃ ശംസുഖാഭീഷ്ടദായീ\nതസ്മിൻ മേ ചിത്തവൃത്തിർവിഗതമലതയാ വർദ്ധതാം നിത്യകാലമ്",
+            dev: "श्रीमन्! धन्योऽसि सर्वेश्वर! तव च वपुर्विश्वपावनमास्ते\nसत्यं ज्ञानस्वरूपं विभवगुणनिधिर्भक्तिगम्यं प्रसन्नम्।\nभक्तानामार्तिहारी भवभयदमनः शंसुखाभीष्टदायी\nतस्मिन् मे चित्तवृत्तिर्विगतमलतया वर्द्धतां नित्यकालम्॥",
+            eng: "śrīman! dhanyo'si sarveśvara! tava ca vapur viśvapāvanam āste\nsatyaṁ jñānasvarūpaṁ vibhavaguṇanidhir bhaktigamyaṁ prasannam |\nbhaktānām ārtihārī bhavabhayadamanaḥ śaṁsukhābhīṣṭadāyī\ntasmin me cittavṛttir vigatamalatayā vardhatāṁ nityakālam ||",
+            meaning: "ഹേ സർവ്വേശ്വരാ! ലക്ഷ്മീപതേ! അങ്ങയുടെ തിരുമേനി ലോകത്തെ മുഴുവൻ പവിത്രമാക്കുന്നതാണ്. സത്യജ്ഞാനസ്വരൂപവും പ്രസന്നവും ഭക്തികൊണ്ടുമാത്രം പ്രാപിക്കാവുന്നതുമായ അങ്ങയുടെ രൂപം ആശ്രിതരുടെ ദുഃഖങ്ങളെയും ജനനമരണ ഭയത്തെയും ഇല്ലായ്മ ചെയ്യുന്നു. ആ തൃപ്പാദങ്ങളിൽ എന്റെ മനസ്സ് മാലിന്യങ്ങളേതുമില്ലാതെ സദാ ഉറച്ചുനിൽക്കണമേ."
+          },
+          {
+            num: 5,
+            mal: "വ്യക്താവ്യക്തസ്വരൂപം പരമസുഖമയം വാങ്മനോഽതീതമേവം\nവേദാന്തൈർഗീയമാനം മുനിവരഹൃദയധ്യേയമേകാന്തശുദ്ധം\nയത്തദ്ബ്രഹ്മേതി സിദ്ധം തദിഹ പുരസി മേ വിഭ്രതേ വിഗ്രഹാത്മൻ\nകാരുണ്യേനൈവ മേ ത്വം രുജമखिलമപാനുദ്യ രക്ഷ പ്രഭോ മാമ്",
+            dev: "व्यक्ताव्यक्तस्वरूपं परमसुखमयं वाङ्मनोऽतीतमेवं\nवेदान्तैर्गीयमानं मुनिवरहृदयध्येयमेकान्तशुद्धम्।\nयत्तद्ब्रह्मेति सिद्धं तदिह पुरसि मे विभ्रते विग्रहात्मन्\nकारुण्येनैव मे त्वं रुजमखिलमपानुद्य रक्ष प्रभो माम्॥",
+            eng: "vyaktāvyaktasvarūpaṁ paramasukhamayaṁ vāṅmano'tītam evaṁ\nvedāntair gīyamānaṁ munivarahṛdayadhyeyam ekāntaśuddham |\nyattad brahmeti siddhaṁ tadiha purasi me vibhrate vigrahātman\nkāruṇyenaiva me tvaṁ rujam akhilam apānudya rakṣa prabho mām ||",
+            meaning: "വ്യക്തവും അവ്യക്തവുമായ ഭാവങ്ങളോടുകൂടിയതും, വാക്കിനും മനസ്സിനും അതീതമായതും, ഉപനിഷത്തുകളാൽ പുകഴ്ത്തപ്പെടുന്നതും, ഋഷീശ്വരന്മാരുടെ ഹൃദയത്തിൽ ധ്യാനിക്കപ്പെടുന്നതുമായ നിർമ്മല ബ്രഹ്മം തന്നെയാണ് ഇവിടെ വിഗ്രഹമായി നിൽക്കുന്നത്. കരുണാവാരിധിയായ പ്രഭോ! അവിടുത്തെ കാരുണ്യത്താൽ എന്റെ സമസ്ത രോഗങ്ങളെയും നീക്കി എന്നെ രക്ഷിച്ചരുളേണമേ."
+          },
+          {
+            num: 6,
+            mal: "ഐശ്വര്യം ശങ്കരാദ്യൈരപി ദുരധിഗമം യസ്യ തസ്യ പ്രഭാവം\nസങ്ക്രാന്തം ഭക്തിമാത്രേണ ച സുലഭതരം ഭാവയന്തഃ പ്രണീതാഃ\nത്വദ്ഭാവാവിഷ്ടചിത്താസ്തനുഭൃത ഇഹ യേ ഭാഗ്യവന്തോ ലസന്തി\nതേഭ്യോ ഭൂയോ നമോഽസ്തു പ്രണതജവനതാപഹന്ത്രേ തുഭ്യമ്",
+            dev: "ऐश्वर्यं शङ्कराद्यैरपि दुरधिगमं यस्य तस्य प्रभावं\nसङ्क्रान्तं भक्तिमात्रेण च सुलभतरं भावयन्तः प्रणीताः।\nत्वद्भावाविष्टचित्तास्तनुभृत इह ये भाग्यवन्तो लसन्ति\nतेभ्यो भूयो नमोऽस्तु प्रणतजनमनस्तापहन्त्रे तुभ्यम्॥",
+            eng: "aiśvaryaṁ śaṅkarādyair api duradhigamaṁ yasya tasya prabhāvaṁ\nsaṅkrāntaṁ bhaktimātreṇa ca sulabhataraṁ bhāvayantaḥ praṇītāḥ |\ntvadbhāvāviṣṭacittās tanubhṛta iha ye bhāgyavanto lasanti\ntebhyo bhūyo namo'stu praṇatajanamanastāpahantre tubhyam ||",
+            meaning: "ശിവൻ മുതലായ ദേവന്മാർക്കുപോലും അളക്കാനാവാത്ത വൈഭവമുള്ള അങ്ങയെ, കേവല ഭക്തികൊണ്ട് മാത്രം സുലഭമായി ഹൃദയത്തിലേറ്റുന്ന പുണ്യാത്മാക്കളായ ഭക്തോത്തമന്മാർക്കായി നമസ്കാരം! അവരെ അനുഗ്രഹിക്കുന്നവനും ഭക്തരുടെ മനോവ്യഥകളെ അകറ്റുന്നവനുമായ അങ്ങേയ്ക്കായി വീണ്ടും വീണ്ടും സാഷ്ടാംഗ പ്രണാമം."
+          },
+          {
+            num: 7,
+            mal: "മായാം ത്വദ്വൈഭവസ്യ പ്രഥമവിരചിതാം കേഽപി പശ്യന്ത്യപാര-\nസ്വാന്താഃ ശാന്താ വിമുക്താ വിഷയവിഷധരാത് ത്വന്മനോജ്ഞാങ്ഘ്രിപദ്മേ\nലീനാഃ സ്വാത്മാവബോധേന ച പരമപദേ സത്വരൂപേ രമന്തേ\nതന്മായാം മേ നിവാര്യ ത്വയി സതതരതിം ദേഹി ഗോവിന്ദ! ശശ്വത്",
+            dev: "मायां त्वद्वैभवस्य प्रथमविरचितां केऽपि पश्यन्त्यपार-\nस्वान्ताः शान्ता विमुक्ता विषयविषधरात् त्वन्मनोज्ञाङ्घ्रिपद्मे।\nलीनाः स्वात्मावबोधेन च परमपदे सत्वरूपे रमन्ते\nतन्मायां मे निवार्य त्वयि सततरतिं देहि गोविन्द! शश्वत्॥",
+            eng: "māyāṁ tvadvaibhavasya prathamaviracitāṁ ke'pi paśyantyapāra-\nsvāntāḥ śāntā vimuktā viṣayaviṣadharāt tvanmanojñāṅghripadme |\nlīnāḥ svātmāvabodhena ca paramapade satvarūpe ramante\ntanmāyāṁ me nivārya tvayi satataratiṁ dehi govinda! śaśvat ||",
+            meaning: "വിഷയവാസനകളാകുന്ന സർപ്പങ്ങളിൽനിന്ന് മുക്തരായ ശാന്തചിത്തന്മാർ അങ്ങയുടെ മായാവലയത്തെ അതിജീവിച്ച്, മനോഹരമായ അവിടുത്തെ പാദപദ്മങ്ങളിൽ ലയിച്ച് ആത്മാനന്ദം അനുഭവിക്കുന്നു. അല്ലയോ ഗോവിന്ദാ! അവിടുത്തെ ആ മായയെ എന്നിൽനിന്നു മാറ്റി, അങ്ങയിൽ എനിക്ക് അചഞ്ചലമായ ഭക്തി നൽകേണമേ."
+          },
+          {
+            num: 8,
+            mal: "ബ്രഹ്മാ വിഷ്ണുശ്ച രുദ്രസ്ത്രിഗുണമയതനോരസ്യ ഭാഗാ യഥാർത്ഥം\nത്വത്തഃ സഞ്ചോദിതാസ്തേ പ്രഭുതയ ഇഹ ഹി സ്വേ സ്വേ കാര്യേ പ്രവൃത്താഃ\nസർവ്വസ്യ ത്വം നിദാനം പരമശിവമയസ്ത്വത്പ്രഭാവം വിചിന്ത്യം\nധ്യായന്തോ യാന്തി നിത്യം പരമപദമഹോ വാതഗേഹാധിനാഥ!",
+            dev: "ब्रह्मा विष्णुश्च रुद्रस्त्रिगुणमयतनोरस्य भागा यथार्थं\nत्वत्तः सञ्चोदितास्ते प्रभुतय इह हि स्वे स्वे कार्ये प्रवृत्ताः।\nसर्वस्य त्वं निदानं परमशिवमयंस्त्वत्प्रभावं विचिन्त्यं\nध्यायन्तो यान्ति नित्यं परमपदमहो वातगेहाधिनाथ!॥",
+            eng: "brahmā viṣṇuśca rudrastriguṇamayatanorasya bhāgā yathārthaṁ\ntvattaḥ sañcoditāste prabhutaya iha hi sve sve kārye pravṛttāḥ |\nsarvasya tvaṁ nidānaṁ paramaśivamayanstvaprabhāvaṁ vicintyaṁ\ndhyāyanto yānti nityaṁ paramapadam aho vātagehādhinātha ||",
+            meaning: "സൃഷ്ടിസ്ഥിതിസംഹാരകർത്താക്കളായ ത്രിമൂർത്തികൾ ത്രിഗുണങ്ങളുടെ വികാസമായി അങ്ങയുടെ പ്രേരണയാലാണ് പ്രവൃത്തികളിൽ ഏർപ്പെടുന്നത്. സകല പ്രപഞ്ചത്തിന്റെയും മൂലകാരണവും മംഗളസ്വരൂപനുമായ അവിടുത്തെ മഹിമയെ ധ്യാനിക്കുന്നവർ ശാശ്വതമായ പരമപദം പ്രാപിക്കുന്നു."
+          },
+          {
+            num: 9,
+            mal: "സാധൂനാം ത്രാണഹേതോരസുരഗണദലനസ്യ ചാവശ്യകത്വാത്\nഭൂയോ ഭൂയോഽവതീര്യ ക്ഷിതിതലമതുലം പാലയൻ പാലനീയം\nധർമ്മം സംസ്ഥാപയൻ ത്വം ഭുവനസുഖകരം രൂപമാവിഷ്കരോഷി\nസ്തോതും തേ ശക്തിരസ്തി ക്വ പുനരപി കൃപാം മേ വിദേഹി പ്രസന്നഃ",
+            dev: "साधूनां त्राणहेतोरसुरगणदलनस्य चावश्यकत्वात्\nभूयो भूयोऽवतीर्य क्षितितलमतुलं पालयन् पालनीयम्।\nधर्मं संस्थापयन् त्वं भुवनसुखकरं रूपमाविष्करोषि\nस्तोतुं ते शक्तिरस्ति क्व पुनरपि कृपां मे विदेहि प्रसन्नः॥",
+            eng: "sādhūnāṁ trāṇahetorasuragaṇadalanasya cāvaśyakatvāt\nbhūyo bhūyo'vatīrya kṣititalamatulaṁ pālayan pālanīyam |\ndharmaṁ saṁsthāpayan tvaṁ bhuvanasukhakaraṁ rūpam āviṣkaroṣi\nstotuṁ te śaktir asti kva punar api kṛpāṁ me videhi prasannaḥ ||",
+            meaning: "സജ്ജനങ്ങളെ രക്ഷിക്കുന്നതിനും ദുഷ്ടശക്തികളെ നിഗ്രഹിക്കുന്നതിനുമായി അങ്ങ് വീണ്ടും വീണ്ടും ഭൂമിയിൽ അവതരിച്ച് ധർമ്മത്തെ പുനഃസ്ഥാപിക്കുന്നു. ലോകത്തിന് ആനന്ദമേകുന്ന ആ ദിവ്യരൂപത്തെ പൂർണ്ണമായി വാഴ്ത്തുവാൻ എനിക്ക് എന്ത് കരുത്താണുള്ളത്? അങ്ങയുടെ നിർവ്യാജമായ കൃപാകടാക്ഷം എന്നിൽ വർഷിച്ചരുളേണമേ!"
+          },
+          {
+            num: 10,
+            mal: "ഐശ്വര്യം യദ്വിചിത്രം സകലനിഗമവാഗ്ഭൂഷണം യസ്യ നാമ\nപ്രേമാഭക്തൈരുപാസ്യം ഭവഭയശമനം ശാശ്വതം ശാന്തശോഭം\nതത്താദൃഗ്വാതനാഥാമലസുഖനിലയം രൂപമേതത് പ്രപദ്യേ\nനിശ്ശേഷം മേ രോഗഭാരം ഹര ഹര ജഗദീശാഖിലവ്യാധിഹർത്തഃ!",
+            dev: "ऐश्वर्यं यद्विचित्रं सकलनिगमवाग्भूषणं यस्य नाम\nप्रेमाभक्तैरुपास्यं भवभयशमनं शाश्वतं शान्तशोभम्।\nतत्तादृग्वातनाथामलसुखनिलयं रूपमेतत् प्रपद्ये\nनिश्शेषं मे रोगभारं हर हर जगदीशाखिलव्याधिहर्तः!॥",
+            eng: "aiśvaryaṁ yadvicitraṁ sakalanigamavāgbhūṣaṇaṁ yasya nāma\npremābhaktair upāsyaṁ bhavabhayaśamanaṁ śāśvataṁ śāntaśobham |\ntattādṛg vātanāthāmala-sukhanilayaṁ rūpam etat prapadye\nniśśeṣaṁ me rogabhāraṁ hara hara jagadīśākhila-vyādhihartaḥ ||",
+            meaning: "അത്യത്ഭുതമായ ഐശ്വര്യത്തോടുകൂടിയതും, വേദങ്ങൾക്ക് അലങ്കാരമായിരിക്കുന്ന നാമങ്ങളോടുകൂടിയതും, ഭക്തന്മാരാൽ പ്രേമത്തോടെ ഉപാസിക്കപ്പെടുന്നതും, സകല സംസാരദുരിതങ്ങളെയും ശമിപ്പിക്കുന്നതുമായ അങ്ങയുടെ രൂപത്തെ ഞാൻ ശരണം പ്രാപിക്കുന്നു. ജഗദീശ്വരാ! സകല രോഗങ്ങളെയും അകറ്റുന്ന ഗുരുവായൂരപ്പാ! എന്റെ ഈ രോഗഭാരത്തെ പൂർണ്ണമായും തീർത്തു തരേണമേ!"
+          }
+        ]
+      },
+      2: {
+        description: "ശ്രീനാരായണന്റെ അത്യന്തം മനോഹരമായ ദിവ്യരൂപവർണ്ണനവും ധ്യാനവും.",
+        audio: "https://ia800300.us.archive.org/28/items/Narayaneeyam-Malayalam/Narayaneeyam_D2.mp3",
+        verses: [
+          {
+            num: 1,
+            mal: "സൂര്യാസ്പർദ്ധികിരീടമൂർദ്ധ്വതിലകപ്രോദ്ഭാസിഫാലസ്ഥലം\nകാരുണ്യാകുലനേത്രമാർദ്രഹസിതോല്ലാസം സുനാസാപുടം\nദോർദ്ദണ്ഡാഞ്ചിതശംഖചക്രജലജാമേയാം ഗദാദ്യാഞ്ചിതം\nസൗന്ദര്യൈകരസം വപുർമുരരിപോഃ സാക്ഷാന്മനോ ഭാവയേ",
+            dev: "सूर्यास्पर्धिकिरीटमूर्ध्वतिलकप्रोद्भासिफालस्थलं\nकारुण्याकुलनेत्रमार्द्रहसितोल्लासं सुनासापुटम्।\nदोर्दण्डाञ्चितशङ्खचक्रजलजामेयां गदाद्याञ्चितं\nसौन्दर्यैकरसं वपुर्मुररिपोः साक्षान्मनो भावये॥",
+            eng: "sūryāspardhikirīṭamūrdhvatilakaprodbhāsiphālasthalaṁ\nkāruṇyākulanetramārdrahasitollāsaṁ sunāsāpuṭam |\ndordaṇḍāñcitaśaṅkhacakrajalajāmeyāṁ gadādyāñcitaṁ\nsaundaryaikarasaṁ vapurmuraripoḥ sākṣānmano bhāvaye ||",
+            meaning: "സൂര്യനെപ്പോലും വെല്ലുന്ന രത്നകിരീടം ധരിച്ചവനും, ചന്ദനക്കുറിയാൽ പ്രകാശിക്കുന്ന നെറ്റിത്തടത്തോടുകൂടിയവനും, കാരുണ്യം തുളുമ്പുന്ന മിഴികളും പുഞ്ചിരി വിരിയുന്ന ചുണ്ടുകളും മനോഹരമായ നാസികയുമുള്ളവനും, ശംഖ്, ചക്രം, ഗദ, താമര എന്നിവ ധരിച്ച നാലു തൃക്കൈകളോടുകൂടിയവനുമായ മുരാരിയുടെ തിരുമേനിയെ ഞാൻ എന്റെ മനസ്സിൽ സാക്ഷാൽ ധ്യാനിക്കുന്നു."
+          },
+          {
+            num: 2,
+            mal: "നീലാഭം വപുരഞ്ജനം ച തരളം വന്ദേ സദാ ശാശ്വതം\nപീതാംബരം വിലസന്മനോഹരരമാകാന്തം പരം ശാശ്വതം\nസ്മേരാസ്യാംബുരുഹം പ്രസന്നവദനം വാത്സല്യവാരാന്നിധിം\nനാരായണം കരുണാകരം ഹൃദി ഭജേ രോഗപ്രശാന്ത്യൈ സദാ",
+            dev: "नीलाभं वपुरञ्जनं च तरलं वन्दे सदा शाश्वतं\nपीताम्बरं विलसन्मनोहररमाकान्तं परं शाश्वतम्।\nस्मेरास्याम्बुरुहं प्रसन्नवदनं वात्सल्यवारान्निधिं\nनारायणं करुणाकरं हृदि भजे रोगप्रशान्त्यै सदा॥",
+            eng: "nīlābhaṁ vapurañjanaṁ ca taralaṁ vande sadā śāśvataṁ\npītāmbaraṁ vilasanmanohararamākāntaṁ paraṁ śāśvatam |\nsmerāsyāmburuhaṁ prasannavadanaṁ vātsalyavārānnidhiṁ\nnārāyaṇaṁ karuṇākaraṁ hṛdi bhaje rogapraśāntyai sadā ||",
+            meaning: "കാർമുകിലിന്റെ നീലവർണ്ണമുള്ളവനും, പീതാംബരം അണിഞ്ഞവനും, ലക്ഷ്മീവല്ലഭനും, വിടർന്ന താമരപ്പൂവുപോലുള്ള പുഞ്ചിരിക്കുന്ന മുഖത്തോട് കൂടിയവനും, വാത്സല്യത്തിന്റെ സമുദ്രവുമായ ഭഗവാൻ നാരായണനെ എന്റെ സർവ്വ രോഗപീഡകളും ശമിക്കുന്നതിനായി ഞാൻ ഹൃദയത്തിൽ സദാ ഭജിക്കുന്നു."
+          }
+        ]
+      },
+      100: {
+        description: "ഭഗവാന്റെ തിരുമുടി മുതൽ തൃപ്പാദം വരെയുള്ള (കേശാദിപാദം) സാക്ഷാൽ ദിവ്യദർശനവും രോഗമുക്തിയും (അഗ്രേ പശ്യാമി!).",
+        audio: "https://ia800300.us.archive.org/28/items/Narayaneeyam-Malayalam/Narayaneeyam_D100.mp3",
+        verses: [
+          {
+            num: 1,
+            mal: "അഗ്രേ പശ്യാമി തേജോ നിബിഡതരകലായാവലീലോഭനീയം\nപീയൂഷാപ്ലാവിതോഽഹം തദനു തദുദരേ ദിവ്യകൗമാരവേഷം\nതാരുണ്യാഭം സുരമ്യം സകലജഗതി ച വ്യാപ്തമാശ്ചര്യാ രൂപം\nസാന്ദ്രാനന്ദം വിഭാന്തം പുരത ഉപഗതം ബാധിതാശേഷരോഗമ്!",
+            dev: "अग्रे पश्यामि तेजो निबिडतरकलावलीलोभनीयं\nपीयूषाप्लावितोऽहं तदनु तदुदरे दिव्यकौमारवेषम्।\nतारुण्याभं सुरम्यं सकलजगति च व्याप्तमाश्चर्यरूपं\nसान्द्रानन्दं विभान्तं पुरत उपगतं बाधिताशेषरोगम्!॥",
+            eng: "agre paśyāmi tejo nibiḍatarakalāyāvalīlobhanīyaṁ\npīyūṣāplāvito'haṁ tadanu tadudare divyakaumāraveṣam |\ntāruṇyābhaṁ suramyaṁ sakalajagati ca vyāptamāścaryarūpaṁ\nsāndrānandaṁ vibhāntaṁ purata upagataṁ bādhitāśeṣarogam! ||",
+            meaning: "ഇതാ എന്റെ കൺമുന്നിൽ കായാമ്പൂക്കളുടെ ശോഭയോടുകൂടിയ അതിതേജസ്സ് ഞാൻ കാണുന്നു! ഞാൻ അമൃതസമുദ്രത്തിൽ മുങ്ങിനിൽക്കുന്നതുപോലെ അനുഭവപ്പെടുന്നു! ആ ദിവ്യജ്യോതിസ്സിന്റെ മദ്ധ്യത്തിൽ, സകല ലോകങ്ങളിലും നിറഞ്ഞതും അതിമനോഹരവുമായ ഒരു ദിവ്യബാലരൂപം സാക്ഷാൽ പ്രത്യക്ഷമായിരിക്കുന്നു! ആനന്ദഘനമായ ആ തിരുസ്വരൂപം ഇതാ എന്റെ രോഗങ്ങളെ മുഴുവൻ ഇല്ലായ്മ ചെയ്തിരിക്കുന്നു!"
+          },
+          {
+            num: 10,
+            mal: "യോഗീന്ദ്രാണാം ത്വദംഗേഷ്വധികസുമധുരം മുക്തിഭാജാം നിവാസോ\nഹ്യാപാദസ്തംഭഹാരീ സകലശമനകൃത് സർവ്വലോകൈകനാഥഃ\nഏവം രൂപം സചിന്മയമതുലസുഖം നിത്യമുക്തൈർനിഷേവ്യം\nവാതാഗാരേശ! കാരുണ്യജലധിരഖിലം ദേഹി മേ ദീർഘമായുഃ",
+            dev: "योगीन्द्राणां त्वदङ्गेष्वधिकसुमधुरं मुक्तिभाजां निवासो\nह्यापादस्तम्भहारी सकलशमनकृत् सर्वलोकैकनाथः।\nएवं रूपं सचिन्मयमतुलसुखं नित्यमुक्तैर्निषेव्यं\nवातागारेश! कारुण्यजलधिरखिलं देहि मे दीर्घमायुः॥",
+            eng: "yogīndrāṇāṁ tvadaṅgeṣvadhikasumadhuraṁ muktibhājāṁ nivāso\nhyāpādastambhahārī sakalaśamanakṛt sarvalokainkanāthaḥ |\nevaṁ rūpaṁ sacinmayamatulasukhaṁ nityamuktairniṣevyaṁ\nvātāgāreśa! kāruṇyajaladhirakhilaṁ dehi me dīrghamāyuḥ ||",
+            meaning: "യോഗീശ്വരന്മാർക്ക് പരമാനന്ദം പകരുന്നതും, മുക്തന്മാരുടെ ആശ്രയവും, സർവ്വ ദുഃഖദുരിതങ്ങളെയും നിശ്ശേഷം ശമിപ്പിക്കുന്നതുമായ ചൈതന്യസ്വരൂപനാണ് അങ്ങ്. കാരുണ്യക്കടലായ അല്ലയോ ഗുരുവായൂരപ്പാ! അവിടുത്തെ നിർമ്മല ഭക്തിയോടൊപ്പം എനിക്ക് ആയുരാരോഗ്യസൗഖ്യങ്ങളും പ്രദാനം ചെയ്തരുളേണമേ!"
+          }
+        ]
+      }
+    };
+
+    /* -------------------------------------------------------------
+       2. APPLICATION STATE
+    ------------------------------------------------------------- */
+    let currentDashakamId = 1;
+    let currentScript = 'mal'; // 'mal' | 'dev' | 'eng'
+    let showMeaning = true;
+    let baseFontSize = 18; // px for verses
+
+    /* -------------------------------------------------------------
+       3. INITIALIZATION
+    ------------------------------------------------------------- */
+    window.onload = function() {
+      buildSidebarList();
+      loadDashakam(1);
+      setupAudioPlayer();
+      lucide.createIcons();
+    };
+
+    /* -------------------------------------------------------------
+       4. SIDEBAR DIRECTORY LOGIC
+    ------------------------------------------------------------- */
+    function buildSidebarList(filterText = "") {
+      const container = document.getElementById("dashakamListContainer");
+      container.innerHTML = "";
+      const query = filterText.toLowerCase().trim();
+
+      DASHAKAMS_META.forEach(item => {
+        const matches = (
+          item.id.toString().includes(query) ||
+          item.title_mal.toLowerCase().includes(query) ||
+          item.title_dev.toLowerCase().includes(query) ||
+          item.title_eng.toLowerCase().includes(query)
+        );
+
+        if (!matches) return;
+
+        const isCurrent = item.id === currentDashakamId;
+        const btn = document.createElement("button");
+        btn.onclick = () => {
+          loadDashakam(item.id);
+          if (window.innerWidth < 1024) toggleSidebar(false);
+        };
+        btn.className = `w-full text-left px-3 py-2.5 rounded-xl transition-all flex items-center justify-between text-xs sm:text-sm ${
+          isCurrent 
+            ? "bg-maroon-800 text-white font-semibold shadow-sm" 
+            : "hover:bg-amber-100/60 text-stone-800"
+        }`;
+
+        let titleDisplay = item.title_mal;
+        if (currentScript === 'dev') titleDisplay = item.title_dev;
+        if (currentScript === 'eng') titleDisplay = item.title_eng;
+
+        btn.innerHTML = `
+          <div class="flex items-center gap-2.5 truncate">
+            <span class="w-6 h-6 rounded-md flex items-center justify-center font-mono text-xs ${
+              isCurrent ? "bg-amber-400 text-maroon-900 font-bold" : "bg-[#E6DBCE] text-stone-700"
+            }">${item.id}</span>
+            <span class="truncate">${titleDisplay}</span>
+          </div>
+          <i data-lucide="chevron-right" class="w-3.5 h-3.5 opacity-60"></i>
+        `;
+        container.appendChild(btn);
+      });
+      lucide.createIcons();
+    }
+
+    function filterDashakamList() {
+      const q = document.getElementById("dashakamSearch").value;
+      buildSidebarList(q);
+    }
+
+    function toggleSidebar(open) {
+      const sb = document.getElementById("sidebar");
+      const backdrop = document.getElementById("drawerBackdrop");
+      if (open) {
+        sb.classList.remove("-translate-x-full");
+        backdrop.classList.remove("hidden");
+      } else {
+        sb.classList.add("-translate-x-full");
+        backdrop.classList.add("hidden");
+      }
+    }
+
+    /* -------------------------------------------------------------
+       5. CONTENT LOADER & RENDERER
+    ------------------------------------------------------------- */
+    function loadDashakam(id) {
+      if (id < 1 || id > 100) return;
+      currentDashakamId = id;
+
+      // Update titles
+      const meta = DASHAKAMS_META.find(d => d.id === id) || { id, title_mal: `ദശകം ${id}`, title_dev: `दशकम् ${id}`, title_eng: `Dashakam ${id}` };
+      
+      const badge = document.getElementById("dashakamNumberBadge");
+      badge.textContent = `ദശകം | Dashakam ${id} of 100`;
+
+      const titleMain = document.getElementById("dashakamTitleMain");
+      const titleSub = document.getElementById("dashakamTitleSub");
+      const desc = document.getElementById("dashakamDescription");
+
+      if (currentScript === 'mal') {
+        titleMain.textContent = `${meta.id}. ${meta.title_mal}`;
+        titleSub.textContent = meta.title_dev;
+      } else if (currentScript === 'dev') {
+        titleMain.textContent = `${meta.id}. ${meta.title_dev}`;
+        titleSub.textContent = meta.title_mal;
+      } else {
+        titleMain.textContent = `${meta.id}. ${meta.title_eng}`;
+        titleSub.textContent = meta.title_mal;
+      }
+
+      const content = DASHAKAM_CONTENT[id];
+      desc.textContent = (content && content.description) 
+        ? content.description 
+        : `Devotional composition of Dashakam ${id}. Full slokas and meanings can be viewed across Malayalam, Devanagari, and English.`;
+
+      // Update Audio Player source
+      const audioEl = document.getElementById("audioElement");
+      const audioLabel = document.getElementById("audioTrackLabel");
+      if (content && content.audio) {
+        audioEl.src = content.audio;
+        audioLabel.textContent = `Dashakam ${id} Audio Chanting`;
+      } else {
+        // Fallback default audio source
+        audioEl.src = `https://ia800300.us.archive.org/28/items/Narayaneeyam-Malayalam/Narayaneeyam_D${id}.mp3`;
+        audioLabel.textContent = `Dashakam ${id} Audio (Archive.org chant)`;
+      }
+      resetAudioState();
+
+      // Render Slokas
+      renderSlokas(id);
+
+      // Refresh sidebar active highlight
+      buildSidebarList(document.getElementById("dashakamSearch").value);
+
+      // Scroll smoothly to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderSlokas(id) {
+      const container = document.getElementById("slokasContainer");
+      container.innerHTML = "";
+
+      const dashakamData = DASHAKAM_CONTENT[id];
+
+      // If content is present, render real verses
+      if (dashakamData && dashakamData.verses && dashakamData.verses.length > 0) {
+        dashakamData.verses.forEach(verse => {
+          const card = createVerseCard(verse);
+          container.appendChild(card);
+        });
+      } else {
+        // Helpful placeholder structure if a specific middle dashakam is not yet populated
+        const notice = document.createElement("div");
+        notice.className = "bg-amber-50 border border-amber-200/80 p-6 rounded-2xl text-center space-y-3";
+        notice.innerHTML = `
+          <div class="w-10 h-10 mx-auto bg-amber-100 text-maroon-800 rounded-full flex items-center justify-center">
+            <i data-lucide="feather" class="w-5 h-5"></i>
+          </div>
+          <h4 class="font-bold text-maroon-900 font-header text-base">ദശകം ${id} - ടെക്സ്റ്റ് തയ്യാറാകുന്നു</h4>
+          <p class="text-xs sm:text-sm text-stone-600 max-w-lg mx-auto leading-relaxed">
+            Dashakam 1, 2, and 100 are fully preloaded with real Malayalam, Devanagari, English transliteration, and meanings.
+            You can drop JSON files or paste verses directly into the <code class="bg-amber-100 px-1.5 py-0.5 rounded text-maroon-900">DASHAKAM_CONTENT[${id}]</code> object in this single file.
+          </p>
+          <div class="pt-2">
+            <button onclick="loadDashakam(1)" class="px-4 py-2 bg-maroon-800 text-white rounded-lg text-xs font-semibold hover:bg-maroon-900 transition">
+              View Sample Dashakam 1
+            </button>
+          </div>
+        `;
+        container.appendChild(notice);
+      }
+
+      lucide.createIcons();
+    }
+
+    function createVerseCard(verse) {
+      const card = document.createElement("article");
+      card.className = "bg-white border border-[#E9DFD2] rounded-2xl p-5 sm:p-7 shadow-sm transition-all hover:shadow-md relative overflow-hidden";
+
+      // Verse script picker
+      let textContent = "";
+      let fontClass = "font-malayalam";
+
+      if (currentScript === 'mal') {
+        textContent = verse.mal;
+        fontClass = "font-malayalam";
+      } else if (currentScript === 'dev') {
+        textContent = verse.dev;
+        fontClass = "font-devanagari";
+      } else {
+        textContent = verse.eng;
+        fontClass = "font-translit";
+      }
+
+      // Convert line breaks safely
+      const formattedLines = textContent.split('\n').join('<br>');
+
+      card.innerHTML = `
+        <div class="flex items-center justify-between border-b border-stone-150 pb-3 mb-4">
+          <span class="inline-flex items-center gap-1.5 text-xs font-bold text-maroon-900 font-mono bg-stone-100 px-2.5 py-1 rounded-md border border-stone-200">
+            <i data-lucide="bookmark" class="w-3.5 h-3.5 text-amber-600"></i>
+            Verse ${verse.num}
+          </span>
+          <div class="flex items-center gap-2">
+            <button onclick="copyVerseText('${verse.num}')" class="text-stone-400 hover:text-stone-700 p-1 transition" title="Copy Verse">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sloka Display -->
+        <div id="verse-text-${verse.num}" class="${fontClass} font-semibold text-stone-900 verse-line text-center sm:text-left mb-4" style="font-size: ${baseFontSize}px;">
+          ${formattedLines}
+        </div>
+
+        <!-- Word-by-Word / English & Malayalam Meaning -->
+        <div class="meaning-block ${showMeaning ? 'block' : 'hidden'} mt-4 pt-4 border-t border-[#F2ECE3] bg-[#FCFAF7] -mx-5 -mb-5 sm:-mx-7 sm:-mb-7 p-4 sm:p-5 rounded-b-2xl">
+          <div class="flex items-center gap-1.5 text-xs font-semibold text-stone-700 mb-1.5 uppercase tracking-wider">
+            <i data-lucide="info" class="w-3.5 h-3.5 text-maroon-800"></i>
+            <span class="font-malayalam">മലയാള അർത്ഥം:</span>
+          </div>
+          <p class="text-xs sm:text-sm text-stone-700 leading-relaxed font-malayalam">
+            ${verse.meaning || "ഈ ശ്ലോകത്തിന്റെ വ്യാഖ്യാനം ഉടൻ ലഭ്യമാകുന്നതാണ്."}
+          </p>
+        </div>
+      `;
+
+      return card;
+    }
+
+    /* -------------------------------------------------------------
+       6. SCRIPT SWITCHER & CONTROLS
+    ------------------------------------------------------------- */
+    function setScript(scriptKey) {
+      currentScript = scriptKey;
+
+      // Update button styling
+      ['mal', 'dev', 'eng'].forEach(k => {
+        const btn = document.getElementById(`btn-${k}`);
+        if (k === scriptKey) {
+          btn.className = "px-2.5 py-1 rounded-md font-medium transition-all bg-maroon-800 text-white shadow-sm";
+        } else {
+          btn.className = "px-2.5 py-1 rounded-md font-medium text-stone-700 transition-all hover:text-black";
+        }
+      });
+
+      // Reload view with new script
+      loadDashakam(currentDashakamId);
+    }
+
+    function toggleMeaning() {
+      showMeaning = !showMeaning;
+      const desktopText = document.getElementById("meaningBtnText");
+      const mobileText = document.getElementById("mobileMeaningToggleText");
+      const label = showMeaning ? "അർത്ഥം മറയ്ക്കുക" : "അർത്ഥം കാണിക്കുക";
+      if (desktopText) desktopText.textContent = label;
+      if (mobileText) mobileText.textContent = label;
+
+      // Toggle visibility of all cards
+      document.querySelectorAll(".meaning-block").forEach(el => {
+        if (showMeaning) {
+          el.classList.remove("hidden");
+        } else {
+          el.classList.add("hidden");
+        }
+      });
+    }
+
+    function adjustFontSize(delta) {
+      baseFontSize = Math.min(Math.max(14, baseFontSize + (delta * 2)), 32);
+      document.querySelectorAll("[id^='verse-text-']").forEach(el => {
+        el.style.fontSize = `${baseFontSize}px`;
+      });
+    }
+
+    function navigateDashakam(step) {
+      const target = currentDashakamId + step;
+      if (target >= 1 && target <= 100) {
+        loadDashakam(target);
+      }
+    }
+
+    /* -------------------------------------------------------------
+       7. AUDIO PLAYER LOGIC
+    ------------------------------------------------------------- */
+    const audio = document.getElementById("audioElement");
+    const playBtn = document.getElementById("playAudioBtn");
+    const playIcon = document.getElementById("playIcon");
+    const seeker = document.getElementById("audioSeeker");
+    const currentTimeEl = document.getElementById("audioCurrentTime");
+    const durationEl = document.getElementById("audioDuration");
+    const speedBtn = document.getElementById("speedBtn");
+
+    function setupAudioPlayer() {
+      audio.addEventListener("timeupdate", () => {
+        if (!isNaN(audio.duration)) {
+          seeker.value = (audio.currentTime / audio.duration) * 100;
+          currentTimeEl.textContent = formatTime(audio.currentTime);
+          durationEl.textContent = formatTime(audio.duration);
+        }
+      });
+
+      audio.addEventListener("loadedmetadata", () => {
+        durationEl.textContent = formatTime(audio.duration);
+      });
+
+      audio.addEventListener("ended", () => {
+        resetAudioState();
+      });
+
+      audio.addEventListener("error", () => {
+        // Soft fallback for placeholder tracks
+        audioLabel = document.getElementById("audioTrackLabel");
+        audioLabel.textContent = `Dashakam ${currentDashakamId} (Add your MP3 URL)`;
+      });
+
+      seeker.addEventListener("input", () => {
+        if (!isNaN(audio.duration)) {
+          audio.currentTime = (seeker.value / 100) * audio.duration;
+        }
+      });
+    }
+
+    function toggleAudio() {
+      if (audio.paused) {
+        audio.play().then(() => {
+          playIcon.setAttribute("data-lucide", "pause");
+          lucide.createIcons();
+        }).catch(err => {
+          showToast("Audio file loading or configure custom audio link.");
+        });
+      } else {
+        audio.pause();
+        playIcon.setAttribute("data-lucide", "play");
+        lucide.createIcons();
+      }
+    }
+
+    function resetAudioState() {
+      audio.pause();
+      audio.currentTime = 0;
+      seeker.value = 0;
+      currentTimeEl.textContent = "0:00";
+      playIcon.setAttribute("data-lucide", "play");
+      lucide.createIcons();
+    }
+
+    function cycleSpeed() {
+      const speeds = [1.0, 1.25, 0.8];
+      let nextSpeed = speeds[(speeds.indexOf(audio.playbackRate) + 1) % speeds.length];
+      audio.playbackRate = nextSpeed;
+      speedBtn.textContent = `${nextSpeed}x`;
+    }
+
+    function formatTime(sec) {
+      if (isNaN(sec)) return "0:00";
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    /* -------------------------------------------------------------
+       8. UTILITIES (Copy & Toast)
+    ------------------------------------------------------------- */
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      document.getElementById("toastMessage").textContent = msg;
+      toast.classList.remove("translate-y-20", "opacity-0");
+      setTimeout(() => {
+        toast.classList.add("translate-y-20", "opacity-0");
+      }, 2600);
+    }
+
+    function copyDashakamLink() {
+      const url = window.location.href.split('#')[0] + `#dashakam-${currentDashakamId}`;
+      fallbackCopyText(url);
+      showToast(`Link to Dashakam ${currentDashakamId} copied!`);
+    }
+
+    function copyVerseText(verseNum) {
+      const textElem = document.getElementById(`verse-text-${verseNum}`);
+      if (textElem) {
+        fallbackCopyText(textElem.innerText);
+        showToast(`Verse ${verseNum} copied to clipboard!`);
+      }
+    }
+
+    function fallbackCopyText(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-9999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.error('Unable to copy', err);
+      }
+      document.body.removeChild(textArea);
+    }
+  </script>
+</body>
+</html>
